@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Trekking Expense - {{ expense.client_name }}</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 1.5cm;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+        
+        .print-area {
+            background-color: white;
+            max-width: 21cm;
+            margin: 20px auto;
+            padding: 0.5cm;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        
+        @media print {
+            body { 
+                background-color: white;
+            }
+            .print-area {
+                margin: 0;
+                padding: 0;
+                box-shadow: none;
+            }
+            .no-print { 
+                display: none; 
+            }
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        
+        .header h2, .header h3 {
+            margin: 5px 0;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 10px;
+            background-color: white;
+        }
+        
+        th, td {
+            border: 1px solid black;
+            padding: 3px 4px;
+            font-size: 12px;
+        }
+        
+        .info-table th {
+            width: 15%;
+            text-align: left;
+            background-color: #f8f8f8;
+        }
+        
+        .expense-table {
+            margin-top: 5px;
+        }
+        
+        .expense-table th {
+            background-color: #f8f8f8;
+            font-weight: bold;
+        }
+        
+        .expense-table .sno { 
+            width: 4%; 
+            text-align: center; 
+        }
+        .expense-table .particulars { 
+            width: 32%; 
+        }
+        .expense-table .rates { 
+            width: 10%; 
+            text-align: right; 
+        }
+        .expense-table .numbers { 
+            width: 8%; 
+            text-align: center; 
+        }
+        .expense-table .days { 
+            width: 6%; 
+            text-align: center; 
+        }
+        .expense-table .total { 
+            width: 12%; 
+            text-align: right; 
+        }
+        .expense-table .remarks { 
+            width: 28%; 
+        }
+        
+        .amount {
+            text-align: right;
+            padding-right: 5px;
+        }
+        
+        .total-row {
+            font-weight: bold;
+            background-color: #f8f8f8;
+        }
+        
+        .signatures {
+            margin-top: 50px;
+            display: flex;
+            justify-content: space-between;
+            page-break-inside: avoid;
+        }
+        
+        .signature-box {
+            text-align: center;
+            width: 180px;
+        }
+        
+        .signature-role {
+            margin-bottom: 30px;  /* Space between role and signature line */
+        }
+        
+        .signature-line {
+            border-top: 1px solid black;
+        }
+        
+        .signature-name {
+            margin-top: 5px;  /* Space between line and name */
+        }
+        
+        .action-buttons {
+            text-align: center;
+            margin: 20px 0;
+            padding: 10px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            margin: 0 5px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            color: white;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-print {
+            background-color: #4CAF50;
+        }
+
+        .btn-download {
+            background-color: #2196F3;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+        
+        @media screen {
+            .screen-only {
+                background-color: #f8f8f8;
+                padding: 20px;
+                margin-bottom: 20px;
+                border-radius: 4px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="screen-only no-print">
+        <h3>Trek Expense Report</h3>
+        <div class="action-buttons">
+            <button onclick="window.print()" class="btn btn-print">Print Document</button>
+            <a href="{% url 'treks:download_expense_pdf' expense.id %}" class="btn btn-download">Download PDF</a>
+        </div>
+    </div>
+
+    <div class="print-area">
+        <div class="header">
+            <h2>North Nepal Treks (P.) Ltd:</h2>
+            <h3>Details of Field Expenses:</h3>
+        </div>
+
+        <table class="info-table">
+            <tr>
+                <th>Client's Name:</th>
+                <td>{{ expense.client_name }}</td>
+                <th>No of Pax:</th>
+                <td>{{ expense.package_numbers }}</td>
+            </tr>
+            <tr>
+                <th>Trekking Route:</th>
+                <td>{{ expense.trekking_route }} ({{ expense.duration_days }} Days)</td>
+                <th>Nationality:</th>
+                <td>{{ expense.nationality }}</td>
+            </tr>
+            <tr>
+                <th>Trekking Guide:</th>
+                <td>{{ expense.trekking_guide }}</td>
+                <th>Starting Date:</th>
+                <td>{{ expense.starting_date|date:"M. d, Y" }}</td>
+            </tr>
+            <tr>
+                <th>Assistant Guide:</th>
+                <td>{{ expense.assistant_guide|default:"" }}</td>
+                <th>Ending Date:</th>
+                <td>{{ expense.ending_date|date:"M. d, Y" }}</td>
+            </tr>
+        </table>
+
+        <table class="expense-table">
+            <thead>
+                <tr>
+                    <th class="sno">S.N.</th>
+                    <th class="particulars">Particulars</th>
+                    <th class="rates">Rates</th>
+                    <th class="numbers">Numbers</th>
+                    <th class="days">Days</th>
+                    <th class="total">Total Nrs.</th>
+                    <th class="remarks">Remarks</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for exp in expense_list %}
+                <tr>
+                    <td class="sno">{% if exp.sn < 10 %}0{% endif %}{{ exp.sn }}</td>
+                    <td>{{ exp.particular }}</td>
+                    <td class="amount">{{ exp.rate|default_if_none:'' }}</td>
+                    <td class="numbers">{{ exp.numbers|default_if_none:'' }}</td>
+                    <td class="numbers">{{ exp.days|default_if_none:'' }}</td>
+                    <td class="amount">{{ exp.total }}</td>
+                    <td>{{ exp.remarks }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr class="total-row">
+                    <td colspan="5" style="text-align: right"><strong>Total in Summary:</strong></td>
+                    <td class="amount"><strong>{{ expense.total_amount }}</strong></td>
+                    <td>{{ expense.remarks }}</td>
+                </tr>
+                <tr>
+                    <td colspan="5" style="text-align: right">Advance Paid:</td>
+                    <td class="amount">{{ expense.advance_paid }}</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td colspan="5" style="text-align: right">Balance Amount:</td>
+                    <td class="amount">{{ expense.balance_amount }}</td>
+                    <td></td>
+                </tr>
+            </tfoot>
+        </table>
+
+        <div class="signatures">
+            <div class="signature-box">
+                <div class="signature-role">Received By</div>
+                <div class="signature-line"></div>
+                <div class="signature-name">{{ expense.received_by }}</div>
+            </div>
+            <div class="signature-box">
+                <div class="signature-role">Approved By</div>
+                <div class="signature-line"></div>
+                <div class="signature-name">{{ expense.approved_by }}</div>
+            </div>
+            <div class="signature-box">
+                <div class="signature-role">Paid By</div>
+                <div class="signature-line"></div>
+                <div class="signature-name">{{ expense.paid_by }}</div>
+            </div>
+        </div>
+</body>
+</html>
