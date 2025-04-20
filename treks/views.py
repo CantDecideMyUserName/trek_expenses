@@ -4,6 +4,7 @@ from xhtml2pdf import pisa
 from io import BytesIO
 from django.shortcuts import get_object_or_404, render
 from .models import TrekkingExpense
+from django.template.loader import render_to_string
 
 def print_expense(request, pk):
     expense = get_object_or_404(TrekkingExpense, pk=pk)
@@ -80,11 +81,10 @@ def print_expense(request, pk):
 
 def download_expense_pdf(request, pk):
     expense = get_object_or_404(TrekkingExpense, pk=pk)
-    # Create list of expenses in order (same as print_expense)
+    # Build expense_list exactly as in print_expense
     expense_list = []
     current_sn = 1
 
-    # Add regular expenses only if they exist
     if expense.package_rate:
         expense_list.append({
             'sn': current_sn,
@@ -133,7 +133,6 @@ def download_expense_pdf(request, pk):
         })
         current_sn += 1
 
-    # Add additional expenses
     for add_expense in expense.additional_expenses.all():
         expense_list.append({
             'sn': current_sn,
@@ -146,19 +145,17 @@ def download_expense_pdf(request, pk):
         })
         current_sn += 1
 
-    template = get_template('treks/print_expense.html')
-    html = template.render({
+    html = render_to_string('treks/print_expense.html', {
         'expense': expense,
         'expense_list': expense_list,
     })
-    
-    # Create PDF
-    result = BytesIO()
-    pdf = pisa.pisaDocument(BytesIO(html.encode("UTF-8")), result)
-    
-    if not pdf.err:
-        response = HttpResponse(result.getvalue(), content_type='application/pdf')
-        response['Content-Disposition'] = f'attachment; filename="trek_expense_{expense.pk}.pdf"'
-        return response
-    
-    return HttpResponse('Error generating PDF', status=400)
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="expense_{pk}.pdf"'
+    pisa.CreatePDF(html, dest=response)
+    return response
+
+def guide_porter_print(request, pk):
+    expense = get_object_or_404(TrekkingExpense, pk=pk)
+    return render(request, 'treks/guide_porter_print.html', {
+        'expense': expense,
+    })

@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Guide/Porter Advance Summary</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #fafafa; font-size: 13px; }
+        .center { text-align: center; }
+        .report-box {
+            background: #fff;
+            margin: 40px auto;
+            padding: 30px 30px 10px 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px #ddd;
+            width: 700px;
+            font-size: 13px;
+        }
+        h1 { font-size: 1.7em; margin-bottom: 0; text-align: center; font-weight: bold; }
+        h2 { font-size: 1.0em; margin-top: 0.2em; margin-bottom: 18px; text-align: center; font-weight: bold; }
+        table { border-collapse: collapse; width: 100%; margin: 20px 0; font-size: 13px; }
+        th, td { border: 1px solid #333; padding: 6px; text-align: left; font-size: 13px; }
+        th { background: #e0e0e0; font-weight: bold; text-align: center; font-size: 13px; }
+        td { font-size: 13px; }
+        .total-row td { font-weight: bold; background: #f9f9f9; }
+        .signatures {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+            width: 100%;
+            font-size: 13px;
+        }
+        .signature-box {
+            flex: 1;
+            text-align: center;
+            margin: 0 8px;
+            font-size: 13px;
+        }
+        .sign-label {
+            font-weight: bold;
+            margin-bottom: 6px;
+            font-size: 13px;
+        }
+        .sign-line {
+            border-top: 1.5px solid #333;
+            width: 80%;
+            margin: 20px auto 8px auto;
+            height: 2px;
+            display: block;
+        }
+        .signature-name {
+            margin-top: 12px;
+            font-size: 13px;
+        }
+        .porter-signature-bottom {
+            margin-top: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            font-size: 13px;
+        }
+        .porter-sign-label-bottom {
+            font-weight: bold;
+            margin-left: 80px;
+            margin-bottom: 4px;
+            font-size: 13px;
+        }
+        .porter-sign-line-bottom {
+            display: inline-block;
+            border-bottom: 1.5px solid #333;
+            width: 220px;
+            height: 2px;
+            margin-left: 80px;
+            vertical-align: middle;
+        }
+        .print-btn {
+            background: #43b04a;
+            color: #fff;
+            border: none;
+            padding: 7px 18px;
+            border-radius: 5px;
+            font-size: 13px;
+            cursor: pointer;
+        }
+        .print-btn:active { background: #388e3c; }
+    </style>
+</head>
+<body>
+    <div class="report-box">
+        <!-- Print Button -->
+        <div style="text-align: right; margin-bottom: 16px;">
+            <button onclick="window.print()" class="print-btn">Print</button>
+        </div>
+        <!-- Remove Porter Name at the top -->
+
+        <div class="center">
+            <h1>North Nepal Treks (P.) Ltd:</h1>
+            <h2>Guide/Porter Advance Summary</h2>
+        </div>
+        <!-- Details of Field Expenses Section -->
+        <table style="width:100%; margin-bottom: 24px;">
+            <tr>
+                <td colspan="6" style="font-weight:bold; text-align:center; border:none; padding-bottom:8px;">
+                    Details of Field Expenses:
+                </td>
+            </tr>
+            <tr>
+                <td style="font-weight:bold;">Client's Name:</td>
+                <td>{{ expense.client_name }}</td>
+                <td style="font-weight:bold;">No of Pax:</td>
+                <td>{{ expense.no_of_pax }}</td>
+                <td style="font-weight:bold;">Nationality:</td>
+                <td>{{ expense.nationality }}</td>
+            </tr>
+            <tr>
+                <td style="font-weight:bold;">Trekking Route:</td>
+                <td>{{ expense.trekking_route }}</td>
+                <td style="font-weight:bold;">Starting Date:</td>
+                <td>{{ expense.starting_date }}</td>
+                <td style="font-weight:bold;">Ending Date:</td>
+                <td>{{ expense.ending_date }}</td>
+            </tr>
+            <tr>
+                <td style="font-weight:bold;">Trekking Guide:</td>
+                <td>{{ expense.trekking_guide }}</td>
+                <td style="font-weight:bold;">Assistant Guide:</td>
+                <td>{{ expense.assistant_guide }}</td>
+                <td colspan="2"></td>
+            </tr>
+        </table>
+        <table>
+            <tr>
+                <th>Advance Type</th>
+                <th>Amount</th>
+                <th>Remarks</th>
+            </tr>
+            <tr>
+                <td>Guide Advance</td>
+                <td>{{ expense.guide_advance_amount }}</td>
+                <td>{{ expense.guide_advance_remark }}</td>
+            </tr>
+            <tr>
+                <td>Porter Advance</td>
+                <td>{{ expense.porter_advance_amount }}</td>
+                <td>{{ expense.porter_advance_remark }}</td>
+            </tr>
+            <tr>
+                <td>Package Advance</td>
+                <td>{{ expense.package_advance_amount }}</td>
+                <td>{{ expense.package_advance_remark }}</td>
+            </tr>
+            <tr>
+                <td>Miscellaneous Advance</td>
+                <td>{{ expense.misc_advance_amount }}</td>
+                <td>{{ expense.misc_advance_remark }}</td>
+            </tr>
+            <tr>
+                <td>Assistant Guide</td>
+                <td>{{ expense.assistant_guide_amount }}</td>
+                <td>{{ expense.assistant_advance_remark }}</td>
+            </tr>
+            <tr class="total-row">
+                <td>Total Advance Given</td>
+                <td>
+                    {{ expense.guide_advance_amount|add:expense.porter_advance_amount|add:expense.package_advance_amount|add:expense.misc_advance_amount|add:expense.assistant_guide_amount }}
+                </td>
+                <td></td>
+            </tr>
+        </table>
+        <div class="signatures">
+            <div class="signature-box">
+                <div class="sign-label">Received By</div>
+                <span class="sign-line"></span>
+                <div class="signature-name">{{ expense.received_by }}</div>
+            </div>
+            <div class="signature-box">
+                <div class="sign-label">Approved By</div>
+                <span class="sign-line"></span>
+                <div class="signature-name">{{ expense.approved_by }}</div>
+            </div>
+            <div class="signature-box">
+                <div class="sign-label">Paid By</div>
+                <span class="sign-line"></span>
+                <div class="signature-name">{{ expense.paid_by }}</div>
+            </div>
+        </div>
+        <!-- Porter signature at bottom -->
+        <div class="porter-signature-bottom">
+            <div class="porter-sign-label-bottom">Porter</div>
+            <span class="porter-sign-line-bottom"></span>
+        </div>
+    </div>
+</body>
+</html>

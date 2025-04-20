@@ -5,6 +5,7 @@ name = "pypi"
 
 [packages]
 django = "*"
+xhtml2pdf = "==0.2.16"
 
 [dev-packages]
 

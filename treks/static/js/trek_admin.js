@@ -13,6 +13,7 @@ django.jQuery(document).ready(function($) {
     // Guide fields
     var guideSalaryRateField = $('#id_guide_salary_rate');
     var guideSalaryDaysField = $('#id_guide_salary_days');
+    var guideCountField = $('#id_guide_count');
     
     // Assistant Guide fields
     var assistantSalaryRateField = $('#id_assistant_guide_salary_rate');
@@ -25,6 +26,10 @@ django.jQuery(document).ready(function($) {
     
     // Payment fields
     var extraExpensesField = $('#id_extra_expenses');
+    var guideAdvanceField = $('#id_guide_advance_amount');
+    var porterAdvanceField = $('#id_porter_advance_amount');
+    var packageAdvanceField = $('#id_package_advance_amount');
+    var miscAdvanceField = $('#id_misc_advance_amount');
     var advancePaidField = $('#id_advance_paid');
     var balanceAmountField = $('#id_balance_amount');
 
@@ -87,14 +92,30 @@ django.jQuery(document).ready(function($) {
     function calculateGuideSalaryTotal() {
         var rate = parseFloat(guideSalaryRateField.val()) || 0;
         var days = parseInt(guideSalaryDaysField.val()) || 0;
-        return rate * days;
+        var count = parseInt(guideCountField.val()) || 1;
+        return rate * days * count;
     }
 
-    // Function to calculate assistant guide salary total
+    // Function to calculate assistant guide salary total (including inlines)
     function calculateAssistantSalaryTotal() {
-        var rate = parseFloat(assistantSalaryRateField.val()) || 0;
-        var days = parseInt(assistantSalaryDaysField.val()) || 0;
-        return rate * days;
+        var total = 0;
+        // Calculate for the main assistant guide fields
+        var rate = parseFloat($('#id_assistant_guide_salary_rate').val()) || 0;
+        var days = parseInt($('#id_assistant_guide_days').val()) || 0;
+        if (rate && days) {
+            total += rate * days;
+        }
+        // Calculate for all assistant guide inlines
+        $('[id^="id_assistant_guides-"]').each(function() {
+            var $row = $(this).closest('tr');
+            var inlineRate = parseFloat($row.find('[id$="-salary_rate"]').val()) || 0;
+            var inlineDays = parseInt($row.find('[id$="-salary_days"]').val()) || 0;
+            var inlineCount = parseInt($row.find('[id$="-count"]').val()) || 0;
+            if (inlineRate && inlineDays && inlineCount) {
+                total += inlineRate * inlineDays * inlineCount;
+            }
+        });
+        return total;
     }
 
     // Function to calculate porter salary total
@@ -117,10 +138,21 @@ django.jQuery(document).ready(function($) {
     }
 
     // Function to update balance amount
+    // Function to calculate advance paid
+    function calculateAdvancePaid() {
+        var guide = parseFloat(guideAdvanceField.val()) || 0;
+        var porter = parseFloat(porterAdvanceField.val()) || 0;
+        var package = parseFloat(packageAdvanceField.val()) || 0;
+        var misc = parseFloat(miscAdvanceField.val()) || 0;
+        return guide + porter + package + misc;
+    }
+    
+    // Function to update balance amount
     function updateBalanceAmount() {
         var totalAmount = calculateTotalAmount();
-        var advancePaid = parseFloat(advancePaidField.val()) || 0;
-        var balance = totalAmount - advancePaid;  // Changed from advancePaid - totalAmount
+        var advancePaid = calculateAdvancePaid();
+        advancePaidField.val(advancePaid);
+        var balance = totalAmount - advancePaid;
         balanceAmountField.val(balance);
     }
     
@@ -174,8 +206,14 @@ django.jQuery(document).ready(function($) {
         field.on('input', updateBalanceAmount);
     });
 
+    // Add event listeners for the new advance fields
+    [guideAdvanceField, porterAdvanceField, packageAdvanceField, miscAdvanceField].forEach(function(field) {
+        field.on('input', updateBalanceAmount);
+    });
+
     // Initial calculations
     updateEndDate();
     updateDays();
     updateBalanceAmount();
 });
+
