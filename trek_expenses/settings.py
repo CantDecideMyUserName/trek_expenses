@@ -1,5 +1,6 @@
 from pathlib import Path
 import os
+from celery.schedules import crontab
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -22,19 +23,20 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'treks',
     'clients',
+    'django_celery_beat',  # Added for scheduled tasks
 ]
 
 # Email settings
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.example.com'  # Replace with your SMTP server
+EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'your-email@example.com'  # Replace with your email
-EMAIL_HOST_PASSWORD = 'your-password'  # Replace with your password
-DEFAULT_FROM_EMAIL = 'your-email@example.com'
+EMAIL_HOST_USER = 'saileshgiri25@gmail.com'  # Replace with your email
+EMAIL_HOST_PASSWORD = 'vvyy vmcx jmcj ffzu'  # Replace with your password
+DEFAULT_FROM_EMAIL = 'saileshgiri25@gmail.com'
 
 # Email to receive trek notifications
-TREK_NOTIFICATION_EMAIL = 'notifications@example.com'  # Replace with the email that should receive notifications
+TREK_NOTIFICATION_EMAIL = 'north.npl@gmail.com'  # Updated to use your email for notifications
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -115,3 +117,19 @@ CSRF_COOKIE_SECURE = False  # Set to True if you have SSL certificate
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Celery Configuration Options
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'UTC'  # You may want to change this to match your TIME_ZONE
+
+# Setup Celery Beat Schedule
+CELERY_BEAT_SCHEDULE = {
+    'send-trek-notifications-daily': {
+        'task': 'clients.tasks.send_trek_notifications_task',
+        'schedule': crontab(hour=9, minute=0),  # Run daily at 9 AM
+    },
+}
