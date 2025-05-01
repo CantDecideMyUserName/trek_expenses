@@ -1,0 +1,426 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{% if form.instance.pk %}Edit{% else %}New{% endif %} Client{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h2>{% if form.instance.pk %}Edit{% else %}New{% endif %} Client</h2>
+        </div>
+        <div class="card-body">
+            <form method="post" novalidate>
+                {% csrf_token %}
+                
+                <div class="row">
+                    <div class="col-md-12 mb-4">
+                        <h4>Basic Information</h4>
+                        <hr>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="id_client_name" class="form-label">Client Name*</label>
+                        <input type="text" name="client_name" id="id_client_name" class="form-control" value="{{ form.client_name.value|default:'' }}" required>
+                        {% if form.client_name.errors %}
+                            <div class="text-danger">{{ form.client_name.errors }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <label for="id_email" class="form-label">Email*</label>
+                        <input type="email" name="email" id="id_email" class="form-control" value="{{ form.email.value|default:'' }}" required>
+                        {% if form.email.errors %}
+                            <div class="text-danger">{{ form.email.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label for="id_country" class="form-label">Country*</label>
+                        <input type="text" name="country" id="id_country" class="form-control" value="{{ form.country.value|default:'' }}" required>
+                        {% if form.country.errors %}
+                            <div class="text-danger">{{ form.country.errors }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="col-md-4 mb-3">
+                        <label for="id_passport" class="form-label">Passport*</label>
+                        <input type="text" name="passport" id="id_passport" class="form-control" value="{{ form.passport.value|default:'' }}" required>
+                        {% if form.passport.errors %}
+                            <div class="text-danger">{{ form.passport.errors }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="col-md-4 mb-3">
+                        <label for="id_phone_number" class="form-label">Phone Number*</label>
+                        <input type="text" name="phone_number" id="id_phone_number" class="form-control" value="{{ form.phone_number.value|default:'' }}" required>
+                        {% if form.phone_number.errors %}
+                            <div class="text-danger">{{ form.phone_number.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        <label for="id_quick_notes" class="form-label">Quick Notes</label>
+                        <textarea name="quick_notes" id="id_quick_notes" class="form-control" rows="3">{{ form.quick_notes.value|default:'' }}</textarea>
+                        {% if form.quick_notes.errors %}
+                            <div class="text-danger">{{ form.quick_notes.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-12 mb-4">
+                        <h4>Service Dates</h4>
+                        <hr>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="id_starting_date" class="form-label">Starting Date*</label>
+                        <input type="date" name="starting_date" id="id_starting_date" class="form-control" value="{{ form.starting_date.value|date:'Y-m-d'|default:'' }}" required>
+                        {% if form.starting_date.errors %}
+                            <div class="text-danger">{{ form.starting_date.errors }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <label for="id_ending_date" class="form-label">Ending Date*</label>
+                        <input type="date" name="ending_date" id="id_ending_date" class="form-control" value="{{ form.ending_date.value|date:'Y-m-d'|default:'' }}" required>
+                        {% if form.ending_date.errors %}
+                            <div class="text-danger">{{ form.ending_date.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-12 mb-4">
+                        <h4>Services Offered</h4>
+                        <hr>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-2 mb-3">
+                        <div class="form-check">
+                            <input type="checkbox" name="trekking" id="id_trekking" class="form-check-input service-checkbox" {% if form.trekking.value %}checked{% endif %}>
+                            <label for="id_trekking" class="form-check-label">Trekking</label>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-2 mb-3">
+                        <div class="form-check">
+                            <input type="checkbox" name="peak_climbing" id="id_peak_climbing" class="form-check-input service-checkbox" {% if form.peak_climbing.value %}checked{% endif %}>
+                            <label for="id_peak_climbing" class="form-check-label">Peak Climbing</label>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-2 mb-3">
+                        <div class="form-check">
+                            <input type="checkbox" name="tour" id="id_tour" class="form-check-input service-checkbox" {% if form.tour.value %}checked{% endif %}>
+                            <label for="id_tour" class="form-check-label">Tour</label>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-2 mb-3">
+                        <div class="form-check">
+                            <input type="checkbox" name="adventure_day_activities" id="id_adventure_day_activities" class="form-check-input service-checkbox" {% if form.adventure_day_activities.value %}checked{% endif %}>
+                            <label for="id_adventure_day_activities" class="form-check-label">Adventure/Day Activities</label>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-2 mb-3">
+                        <div class="form-check">
+                            <input type="checkbox" name="flight" id="id_flight" class="form-check-input service-checkbox" {% if form.flight.value %}checked{% endif %}>
+                            <label for="id_flight" class="form-check-label">Flight</label>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-2 mb-3">
+                        <label for="id_misc_service" class="form-label">Other</label>
+                        <input type="text" name="misc_service" id="id_misc_service" class="form-control" value="{{ form.misc_service.value|default:'' }}">
+                    </div>
+                </div>
+                
+                <!-- Trekking and Peak Climbing Fields -->
+                <div id="trekking_fields" style="display: none;">
+                    <div class="row">
+                        <div class="col-md-12 mb-4">
+                            <h4>Trekking & Peak Climbing Details</h4>
+                            <hr>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="id_guide" class="form-label">Guide</label>
+                            <input type="text" name="guide" id="id_guide" class="form-control" value="{{ form.guide.value|default:'' }}">
+                            {% if form.guide.errors %}
+                                <div class="text-danger">{{ form.guide.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="id_porter" class="form-label">Porter</label>
+                            <input type="text" name="porter" id="id_porter" class="form-control" value="{{ form.porter.value|default:'' }}">
+                            {% if form.porter.errors %}
+                                <div class="text-danger">{{ form.porter.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="id_package" class="form-label">Package</label>
+                            <input type="text" name="package" id="id_package" class="form-control" value="{{ form.package.value|default:'' }}">
+                            {% if form.package.errors %}
+                                <div class="text-danger">{{ form.package.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="id_transport" class="form-label">Transport</label>
+                            <input type="text" name="transport" id="id_transport" class="form-control" value="{{ form.transport.value|default:'' }}">
+                            {% if form.transport.errors %}
+                                <div class="text-danger">{{ form.transport.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="id_accommodation" class="form-label">Accommodation</label>
+                            <input type="text" name="accommodation" id="id_accommodation" class="form-control" value="{{ form.accommodation.value|default:'' }}">
+                            {% if form.accommodation.errors %}
+                                <div class="text-danger">{{ form.accommodation.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="id_number_of_days" class="form-label">Number of Days</label>
+                            <input type="number" name="number_of_days" id="id_number_of_days" class="form-control" value="{{ form.number_of_days.value|default:'' }}">
+                            {% if form.number_of_days.errors %}
+                                <div class="text-danger">{{ form.number_of_days.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Pricing Fields (for all services) -->
+                <div class="row">
+                    <div class="col-md-12 mb-4">
+                        <h4>Payment Details</h4>
+                        <hr>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label for="id_price" class="form-label">Price</label>
+                        <div class="input-group">
+                            <span class="input-group-text">$</span>
+                            <input type="number" name="price" id="id_price" class="form-control" step="0.01" value="{{ form.price.value|default:'' }}">
+                        </div>
+                        {% if form.price.errors %}
+                            <div class="text-danger">{{ form.price.errors }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="col-md-4 mb-3">
+                        <label for="id_additional_charges" class="form-label">Additional Charges</label>
+                        <div class="input-group">
+                            <span class="input-group-text">$</span>
+                            <input type="number" name="additional_charges" id="id_additional_charges" class="form-control" step="0.01" value="{{ form.additional_charges.value|default:'0.00' }}">
+                        </div>
+                        {% if form.additional_charges.errors %}
+                            <div class="text-danger">{{ form.additional_charges.errors }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="col-md-4 mb-3">
+                        <label for="id_discount" class="form-label">Discount</label>
+                        <div class="input-group">
+                            <span class="input-group-text">$</span>
+                            <input type="number" name="discount" id="id_discount" class="form-control" step="0.01" value="{{ form.discount.value|default:'0.00' }}">
+                        </div>
+                        {% if form.discount.errors %}
+                            <div class="text-danger">{{ form.discount.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="id_payment_status" class="form-label">Payment Status</label>
+                        <select name="payment_status" id="id_payment_status" class="form-select">
+                            <option value="pending" {% if form.payment_status.value == 'pending' %}selected{% endif %}>Pending</option>
+                            <option value="partial" {% if form.payment_status.value == 'partial' %}selected{% endif %}>Partial</option>
+                            <option value="completed" {% if form.payment_status.value == 'completed' %}selected{% endif %}>Completed</option>
+                        </select>
+                        {% if form.payment_status.errors %}
+                            <div class="text-danger">{{ form.payment_status.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        <h5>Additional Price Items</h5>
+                        <div id="price-items-container">
+                            {% for item in price_items %}
+                                <div class="row price-item mb-2">
+                                    <div class="col-md-4">
+                                        <input type="text" name="price_item_description[]" class="form-control" placeholder="Description" value="{{ item.description }}">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <input type="number" name="price_item_amount[]" class="form-control" step="0.01" placeholder="Amount" value="{{ item.amount }}">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <input type="text" name="price_item_notes[]" class="form-control" placeholder="Quick Note" value="{{ item.notes }}">
+                                    </div>
+                                    <div class="col-md-1">
+                                        <button type="button" class="btn btn-danger remove-price-item">×</button>
+                                    </div>
+                                </div>
+                            {% empty %}
+                                <div class="row price-item mb-2">
+                                    <div class="col-md-4">
+                                        <input type="text" name="price_item_description[]" class="form-control" placeholder="Description">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <input type="number" name="price_item_amount[]" class="form-control" step="0.01" placeholder="Amount">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <input type="text" name="price_item_notes[]" class="form-control" placeholder="Quick Note">
+                                    </div>
+                                    <div class="col-md-1">
+                                        <button type="button" class="btn btn-danger remove-price-item">×</button>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <button type="button" id="add-price-item" class="btn btn-success mt-2">Add Price Item</button>
+                    </div>
+                </div>
+                
+                <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    const priceItemsContainer = document.getElementById('price-items-container');
+                    const addPriceItemBtn = document.getElementById('add-price-item');
+                    addPriceItemBtn.addEventListener('click', function() {
+                        const newItem = document.createElement('div');
+                        newItem.className = 'row price-item mb-2';
+                        newItem.innerHTML = `
+                            <div class="col-md-4">
+                                <input type="text" name="price_item_description[]" class="form-control" placeholder="Description">
+                            </div>
+                            <div class="col-md-3">
+                                <input type="number" name="price_item_amount[]" class="form-control" step="0.01" placeholder="Amount">
+                            </div>
+                            <div class="col-md-4">
+                                <input type="text" name="price_item_notes[]" class="form-control" placeholder="Quick Note">
+                            </div>
+                            <div class="col-md-1">
+                                <button type="button" class="btn btn-danger remove-price-item">×</button>
+                            </div>
+                        `;
+                        priceItemsContainer.appendChild(newItem);
+                    });
+                    priceItemsContainer.addEventListener('click', function(e) {
+                        if (e.target.classList.contains('remove-price-item')) {
+                            e.target.closest('.price-item').remove();
+                        }
+                    });
+                });
+                </script>
+                
+                <div class="row mt-4">
+                    <div class="col-md-12">
+                        <div class="d-flex gap-2">
+                            <button type="submit" name="save" class="btn btn-primary">Save</button>
+                            <button type="submit" name="save_and_add" class="btn btn-secondary">Save and add another</button>
+                            <button type="submit" name="save_and_continue" class="btn btn-info">Save and continue editing</button>
+                            <a href="{% url 'clients:client_list' %}" class="btn btn-outline-secondary">Cancel</a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Get checkboxes
+        const trekkingCheckbox = document.getElementById('id_trekking');
+        const peakClimbingCheckbox = document.getElementById('id_peak_climbing');
+        const trekkingFields = document.getElementById('trekking_fields');
+        
+        // Function to toggle trekking fields visibility
+        function toggleTrekkingFields() {
+            if (trekkingCheckbox.checked || peakClimbingCheckbox.checked) {
+                trekkingFields.style.display = 'block';
+            } else {
+                trekkingFields.style.display = 'none';
+            }
+        }
+        
+        // Add event listeners
+        trekkingCheckbox.addEventListener('change', toggleTrekkingFields);
+        peakClimbingCheckbox.addEventListener('change', toggleTrekkingFields);
+        
+        // Initial toggle
+        toggleTrekkingFields();
+    });
+</script>
+{% endblock %}
+{% endblock %}
+
+<div class="row">
+    <div class="col-md-4 mb-3">
+        <label for="id_starting_date" class="form-label">Starting Date</label>
+        <input type="date" name="starting_date" id="id_starting_date" class="form-control" value="{{ form.starting_date.value|default:'' }}">
+    </div>
+    <div class="col-md-4 mb-3">
+        <label for="id_number_of_days" class="form-label">Number of Days</label>
+        <input type="number" name="number_of_days" id="id_number_of_days" class="form-control" value="{{ form.number_of_days.value|default:'' }}">
+    </div>
+    <div class="col-md-4 mb-3">
+        <label for="id_ending_date" class="form-label">Ending Date</label>
+        <input type="date" name="ending_date" id="id_ending_date" class="form-control" value="{{ form.ending_date.value|default:'' }}">
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    function calculateEndingDate() {
+        const startInput = document.getElementById('id_starting_date');
+        const daysInput = document.getElementById('id_number_of_days');
+        const endInput = document.getElementById('id_ending_date');
+        const startDate = startInput.value;
+        const numDays = parseInt(daysInput.value, 10);
+
+        if (startDate && numDays && numDays > 0) {
+            const start = new Date(startDate);
+            // Subtract 1 so that 1 day means start==end
+            start.setDate(start.getDate() + numDays - 1);
+            const yyyy = start.getFullYear();
+            const mm = String(start.getMonth() + 1).padStart(2, '0');
+            const dd = String(start.getDate()).padStart(2, '0');
+            endInput.value = `${yyyy}-${mm}-${dd}`;
+        }
+    }
+
+    document.getElementById('id_starting_date').addEventListener('change', calculateEndingDate);
+    document.getElementById('id_number_of_days').addEventListener('input', calculateEndingDate);
+});
+</script>
+{% endblock %}
+{% endblock %}

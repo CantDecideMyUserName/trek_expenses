@@ -21,7 +21,20 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'treks',
+    'clients',
 ]
+
+# Email settings
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.example.com'  # Replace with your SMTP server
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'your-email@example.com'  # Replace with your email
+EMAIL_HOST_PASSWORD = 'your-password'  # Replace with your password
+DEFAULT_FROM_EMAIL = 'your-email@example.com'
+
+# Email to receive trek notifications
+TREK_NOTIFICATION_EMAIL = 'notifications@example.com'  # Replace with the email that should receive notifications
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -39,7 +52,7 @@ ROOT_URLCONF = 'trek_expenses.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -87,9 +100,10 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'treks', 'static'),
-]
+
+# Django will automatically find static files in the app's static folders
+# This is sufficient for your current setup
+# STATICFILES_DIRS = []  # Commented out to avoid errors about non-existent directories
 
 # Whitenoise settings
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'

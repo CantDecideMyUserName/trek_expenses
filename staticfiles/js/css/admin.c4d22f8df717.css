@@ -1,0 +1,69 @@
+/* Remove spinbuttons from number inputs */
+input[type=number] {
+    -webkit-appearance: textfield;
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Define standard input properties */
+input {
+    padding: 6px 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 13px;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+/* Error styling */
+.errorlist {
+    color: #ba2121;
+    background: #fff1f1;
+    border: 1px solid #ba2121;
+    border-radius: 4px;
+    padding: 8px 12px;
+    margin: 0 0 4px 0;
+    list-style-type: none;
+}
+
+.error input, 
+.error select, 
+.error textarea {
+    border-color: #ba2121;
+}
+
+.field-error {
+    background: #fff1f1;
+    border: 1px solid #ba2121;
+    border-radius: 4px;
+    color: #ba2121;
+    padding: 4px 8px;
+    margin-top: 4px;
+    font-size: 12px;
+}
+
+/* Focus states */
+input:focus {
+    border-color: #275d8b;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(39, 93, 139, 0.2);
+}
+
+/* Disabled state */
+input:disabled {
+    background-color: #f8f8f8;
+    border-color: #ddd;
+    color: #666;
+}
+
+/* Read-only state */
+input:read-only {
+    background-color: #f8f8f8;
+    border-color: #ddd;
+}

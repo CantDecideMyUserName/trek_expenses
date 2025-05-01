@@ -1,0 +1,167 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h1>Client List</h1>
+    
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <form method="get" class="form-inline">
+                <div class="input-group mb-2 mr-sm-2">
+                    <input type="text" name="search" class="form-control" placeholder="Search clients..." value="{{ request.GET.search }}">
+                </div>
+                
+                <div class="input-group mb-2 mr-sm-2">
+                    <select name="trek" class="form-control">
+                        <option value="">All Treks</option>
+                        {% for client in clients %}
+                            {% if client.package %}
+                                <option value="{{ client.package }}" {% if request.GET.trek == client.package %}selected{% endif %}>{{ client.package }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="input-group mb-2 mr-sm-2">
+                    <select name="guide" class="form-control">
+                        <option value="">All Guides</option>
+                        {% for guide in guides %}
+                            {% if guide %}
+                                <option value="{{ guide }}" {% if request.GET.guide == guide %}selected{% endif %}>{{ guide }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="input-group mb-2 mr-sm-2">
+                    <select name="country" class="form-control">
+                        <option value="">All Countries</option>
+                        {% for country in countries %}
+                            {% if country %}
+                                <option value="{{ country }}" {% if request.GET.country == country %}selected{% endif %}>{{ country }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="input-group mb-2 mr-sm-2">
+                    <select name="service" class="form-control">
+                        <option value="">All Services</option>
+                        <option value="trekking" {% if request.GET.service == 'trekking' %}selected{% endif %}>Trekking</option>
+                        <option value="peak_climbing" {% if request.GET.service == 'peak_climbing' %}selected{% endif %}>Peak Climbing</option>
+                        <option value="tour" {% if request.GET.service == 'tour' %}selected{% endif %}>Tour</option>
+                        <option value="adventure" {% if request.GET.service == 'adventure' %}selected{% endif %}>Adventure/Day Activities</option>
+                        <option value="flight" {% if request.GET.service == 'flight' %}selected{% endif %}>Flight</option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="btn btn-primary mb-2">Filter</button>
+                <a href="{% url 'clients:client_list' %}" class="btn btn-secondary mb-2 ml-2">Clear</a>
+            </form>
+        </div>
+    </div>
+    
+    <div class="row mb-3">
+        <div class="col-md-8">
+            <a href="{% url 'clients:client_create' %}" class="btn btn-success">Add New Client</a>
+        </div>
+        <div class="col-md-4 text-right">
+            <div class="btn-group">
+                <a href="{% url 'clients:export_clients_csv' %}{% if request.GET %}?{{ request.GET.urlencode }}{% endif %}" class="btn btn-outline-primary">
+                    <i class="fas fa-file-csv"></i> Export CSV
+                </a>
+                <a href="{% url 'clients:export_clients_xlsx' %}{% if request.GET %}?{{ request.GET.urlencode }}{% endif %}" class="btn btn-outline-success">
+                    <i class="fas fa-file-excel"></i> Export Excel
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Client Name</th>
+                    <th>Email</th>
+                    <th>Country</th>
+                    <th>Service</th>
+                    <th>Trek/Package</th>
+                    <th>Guide</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for client in clients %}
+                <tr>
+                    <td>{{ client.client_name }}</td>
+                    <td>{{ client.email }}</td>
+                    <td>{{ client.country }}</td>
+                    <td>
+                        {% if client.trekking %}Trekking{% endif %}
+                        {% if client.peak_climbing %}{% if client.trekking %}, {% endif %}Peak Climbing{% endif %}
+                        {% if client.tour %}{% if client.trekking or client.peak_climbing %}, {% endif %}Tour{% endif %}
+                        {% if client.adventure_day_activities %}{% if client.trekking or client.peak_climbing or client.tour %}, {% endif %}Adventure{% endif %}
+                        {% if client.flight %}{% if client.trekking or client.peak_climbing or client.tour or client.adventure_day_activities %}, {% endif %}Flight{% endif %}
+                        {% if client.misc_service %}{% if client.trekking or client.peak_climbing or client.tour or client.adventure_day_activities or client.flight %}, {% endif %}{{ client.misc_service }}{% endif %}
+                    </td>
+                    <td>{{ client.package }}</td>
+                    <td>{{ client.guide }}</td>
+                    <td>{{ client.starting_date }}</td>
+                    <td>{{ client.ending_date }}</td>
+                    <td>
+                        <a href="{% url 'clients:client_detail' client.pk %}" class="btn btn-sm btn-info">View</a>
+                        <a href="{% url 'clients:client_update' client.pk %}" class="btn btn-sm btn-primary">Edit</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="9" class="text-center">No clients found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    {% if is_paginated %}
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page=1{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" aria-label="First">
+                    <span aria-hidden="true">&laquo;&laquo;</span>
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            {% endif %}
+            
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                <li class="page-item active"><a class="page-link" href="#">{{ num }}</a></li>
+                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                <li class="page-item"><a class="page-link" href="?page={{ num }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">{{ num }}</a></li>
+                {% endif %}
+            {% endfor %}
+            
+            {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" aria-label="Last">
+                    <span aria-hidden="true">&raquo;&raquo;</span>
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+{% endblock %}
